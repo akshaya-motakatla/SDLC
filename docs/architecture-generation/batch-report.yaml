@@ -1,0 +1,58 @@
+phase: "Phase 2 - AI-Powered Software Architecture Generation"
+status: complete_with_validation_limitation
+required_endpoints:
+  - method: POST
+    path: /api/projects/{projectId}/architecture/generate
+    status: implemented
+    verification: "H2 MockMvc integration"
+  - method: GET
+    path: /api/projects/{projectId}/architecture
+    status: implemented
+    verification: "H2 MockMvc integration"
+  - method: GET
+    path: /api/projects/{projectId}/architecture/{documentId}
+    status: implemented
+    verification: "H2 MockMvc integration"
+  - method: GET
+    path: /api/projects/{projectId}/architecture/{documentId}/versions
+    status: implemented
+    verification: "H2 MockMvc integration"
+  - method: PUT
+    path: /api/projects/{projectId}/architecture/{documentId}
+    status: implemented
+    verification: "H2 MockMvc integration; invalid Mermaid returns 400"
+  - method: POST
+    path: /api/projects/{projectId}/architecture/{documentId}/approve
+    status: implemented
+    verification: "H2 MockMvc integration"
+  - method: POST
+    path: /api/projects/{projectId}/architecture/{documentId}/reject
+    status: implemented
+    verification: "H2 MockMvc integration"
+tests:
+  backend:
+    command: "C:\\Users\\vamsi\\.maven\\maven-3.10.0\\bin\\mvn.cmd test"
+    result: "PASS: 30 tests, 0 failures, 0 errors, 0 skipped; in-memory H2"
+  frontend_build:
+    command: "npm run build"
+    result: "PASS; Vite reports large dynamically loaded Mermaid/layout chunks"
+  frontend_lint:
+    command: "npm run lint"
+    result: "PASS with one pre-existing App.tsx exhaustive-deps warning"
+  browser:
+    command: "npm run test:e2e -- tests/architecture.spec.ts tests/requirements.spec.ts --workers=1"
+    result: "PASS: 7 tests"
+  browser_typecheck:
+    command: "npm run typecheck:e2e"
+    result: "PASS"
+database:
+  original_ai_sdlc_touched: false
+  live_ai_sdlc_test_architecture_check: not_run
+  restart_persistence_for_architecture: not_run
+  reason: "PostgreSQL listener and backend DB environment credentials unavailable during this validation."
+ai_provider:
+  mock: "Verified by automated tests; demo output is labeled."
+  openai: "Not run; no live call or credential used."
+warnings:
+  - severity: HIGH
+    message: "Verify architecture persistence and retrieval after backend restart against ai_sdlc_test before claiming PostgreSQL validation for Phase 2."

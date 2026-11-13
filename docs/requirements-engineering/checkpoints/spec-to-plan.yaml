@@ -1,0 +1,84 @@
+metadata:
+  generated: "2026-11-12"
+  source_spec: "docs/requirements-engineering/feature-spec.md"
+  target_plan: "docs/requirements-engineering/plan.md"
+
+summary:
+  total_requirements: 8
+  covered_requirements: 8
+  missing_requirements: 0
+  coverage_percentage: 100.0
+
+requirements:
+  - req_id: "REQ-001"
+    req_description: "Generate from owner-authorized persisted project context"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-2/3"
+      phase_name: "Backend generation API"
+      items: ["2.2", "2.3", "2.4", "2.5"]
+    notes: "Only required project context fields are sent to the provider."
+  - req_id: "REQ-002"
+    req_description: "Provider interface, explicit mock/OpenAI, JSON validation and error handling"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-1/3/5"
+      phase_name: "Provider, integration, and documentation"
+      items: ["1.1", "2.2", "2.3", "4.1"]
+    notes: "Spring AI 1.0 is compatible with the existing Spring Boot 3.4 line."
+  - req_id: "REQ-003"
+    req_description: "Persist requirements with requested fields and backward-compatible schema"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-2"
+      phase_name: "Foundational contracts and data"
+      items: ["2.1", "2.2", "2.4"]
+    notes: "Acceptance criteria column remains nullable for legacy data; new writes are validated."
+  - req_id: "REQ-004"
+    req_description: "Authenticated owner-only requirements APIs"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-2/3"
+      phase_name: "Backend requirement lifecycle"
+      items: ["2.2", "2.4", "2.5"]
+    notes: "Every query is scoped through project ownership."
+  - req_id: "REQ-005"
+    req_description: "Pending-by-default human edit/approve/reject/delete lifecycle"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-3/4"
+      phase_name: "Requirement review"
+      items: ["2.4", "2.5", "3.1", "4.1"]
+    notes: "Edits to reviewed requirements reset them to pending."
+  - req_id: "REQ-006"
+    req_description: "Accessible responsive requirements workspace with explicit states"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-4"
+      phase_name: "Frontend requirements workspace"
+      items: ["3.1"]
+    notes: "Uses existing project dashboard and visual conventions."
+  - req_id: "REQ-007"
+    req_description: "Backend and Playwright coverage without paid AI dependency"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-3/5"
+      phase_name: "Verification"
+      items: ["2.3", "2.4", "2.5", "3.1", "4.1"]
+    notes: "Standard provider tests use the mock implementation."
+  - req_id: "REQ-008"
+    req_description: "Document workflow, API examples, schema and provider configuration"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-1/5"
+      phase_name: "Configuration and documentation"
+      items: ["1.1", "4.1"]
+    notes: "No credentials or secret values are documented."
+
+missing_requirements: []
+orphan_plan_items: []
+
+validation:
+  passed: true
+  errors: []
+  warnings: []

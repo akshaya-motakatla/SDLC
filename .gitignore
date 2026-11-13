@@ -1,0 +1,12 @@
+# Local build output and dependency caches
+backend/target/
+frontend/node_modules/
+frontend/dist/
+tools/
+
+# Local environment and IDE files
+**/.env
+**/.env.local
+**/.env.*.local
+.idea/
+.vscode/

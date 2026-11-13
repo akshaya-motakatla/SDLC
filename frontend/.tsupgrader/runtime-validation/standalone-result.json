@@ -1,0 +1,116 @@
+{
+  "planHash": "9df2f1f77afcf3d25745eced324e4a61ee7e9054317891713910daed5f8421c6",
+  "phase": "standalone",
+  "recordedAtUtc": "2026-11-12T19:09:25.3200111Z",
+  "retryCount": 0,
+  "resetBaseline": false,
+  "complete": true,
+  "result": {
+    "setupSucceeded": true,
+    "setupDurationMs": 0,
+    "setupFailureOutput": null,
+    "assertions": [
+      {
+        "name": "frontend-build",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E frontend@0.0.0 build\r\n\u003E tsc -b \u0026\u0026 vite build\r\n\r\n\u001B[36mvite v8.3.6 \u001B[32mbuilding client environment for production...\u001B[36m\u001B[39m\r\ntransforming...\r\n\u2713 2064 modules transformed.\r\nrendering chunks...\r\ncomputing gzip size...\r\ndist/index.html                   0.64 kB \u2502 gzip:  0.38 kB\r\ndist/assets/index-DtldrqF1.css   52.82 kB \u2502 gzip: 11.48 kB\r\ndist/assets/index-C7tAK-tZ.js   274.77 kB \u2502 gzip: 82.61 kB\r\n\r\n\u001B[32m\u2713 built in 4.34s\u001B[39m\r\n",
+        "durationMs": 8687
+      },
+      {
+        "name": "playwright-typecheck",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E frontend@0.0.0 typecheck:e2e\r\n\u003E tsc -p tsconfig.playwright.json\r\n\r\n",
+        "durationMs": 2002
+      },
+      {
+        "name": "tests-pass",
+        "kind": "process",
+        "verificationMethod": "test-results",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "\r\n\u003E frontend@0.0.0 test:e2e\r\n\u003E playwright test\r\n\r\n\r\nRunning 11 tests using 4 workers\r\n\r\n[1/11] tests\\requirements.spec.ts:119:1 \u203A project owner can generate, edit, review, and delete requirements\r\n[2/11] tests\\homepage.spec.ts:4:1 \u203A homepage shows the product title and sign-in screen\r\n[3/11] tests\\projects.spec.ts:79:1 \u203A project creation, listing, editing, search, and deletion work in the UI\r\n[4/11] tests\\auth.spec.ts:3:1 \u203A registration form enforces required fields and password length\r\n[5/11] tests\\auth.spec.ts:23:1 \u203A backend rejects an invalid registration payload without creating an account\r\n[6/11] tests\\projects.spec.ts:117:1 \u203A project API failures are surfaced and retry can recover\r\n[7/11] tests\\auth.spec.ts:42:1 \u203A invalid credentials are rejected by the backend and shown to the user\r\n[8/11] tests\\requirements.spec.ts:161:1 \u203A provider failures are shown and do not produce success-shaped output\r\n[9/11] tests\\auth.spec.ts:58:1 \u203A a valid registration flow can enter the workspace and sign out\r\n[10/11] tests\\requirements.spec.ts:175:1 \u203A requirements workspace is usable on a narrow viewport\r\n[11/11] tests\\live-postgres.spec.ts:57:1 \u203A live registration, requirements workflow, PostgreSQL persistence, authorization, and backend restart\r\n  1 skipped\r\n  10 passed (29.0s)\r\n",
+        "durationMs": 32370,
+        "testResults": {
+          "testFramework": "unknown",
+          "runnerDetectedFrom": "none",
+          "testsTotal": 0,
+          "testsPassed": 0,
+          "testsFailed": 0,
+          "testsSkipped": 0,
+          "parseFailed": true
+        }
+      }
+    ],
+    "executions": [
+      {
+        "source": "devServer",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "dev",
+          "--",
+          "--port",
+          "5174",
+          "--strictPort"
+        ],
+        "cwd": "C:\\Users\\vamsi\\OneDrive\\Desktop\\ai-sdlc-automation-assistant\\frontend",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "frontend-build",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "build"
+        ],
+        "cwd": "C:\\Users\\vamsi\\OneDrive\\Desktop\\ai-sdlc-automation-assistant\\frontend",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "playwright-typecheck",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "typecheck:e2e"
+        ],
+        "cwd": "C:\\Users\\vamsi\\OneDrive\\Desktop\\ai-sdlc-automation-assistant\\frontend",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "tests-pass",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "test:e2e"
+        ],
+        "cwd": "C:\\Users\\vamsi\\OneDrive\\Desktop\\ai-sdlc-automation-assistant\\frontend",
+        "env": {
+          "PLAYWRIGHT_BASE_URL": "http://localhost:5174"
+        },
+        "prependPath": [],
+        "platform": "win32"
+      }
+    ]
+  }
+}

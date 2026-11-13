@@ -1,0 +1,44 @@
+{
+  "generatedAt": "2026-11-11T23:47:11+05:30",
+  "generatedOnPlatform": "win32",
+  "projectType": "webapp",
+  "devServer": {
+    "command": "npm",
+    "args": ["run", "dev", "--", "--port", "5174", "--strictPort"],
+    "url": "http://localhost:5174/",
+    "readyTimeoutSeconds": 120
+  },
+  "setup": [],
+  "assertions": [
+    {
+      "name": "frontend-build",
+      "kind": "process",
+      "command": "npm",
+      "args": ["run", "build"],
+      "verificationMethod": "exit-code",
+      "expected": "0",
+      "timeoutSeconds": 300
+    },
+    {
+      "name": "playwright-typecheck",
+      "kind": "process",
+      "command": "npm",
+      "args": ["run", "typecheck:e2e"],
+      "verificationMethod": "exit-code",
+      "expected": "0",
+      "timeoutSeconds": 180
+    },
+    {
+      "name": "tests-pass",
+      "kind": "process",
+      "command": "npm",
+      "args": ["run", "test:e2e"],
+      "env": {
+        "PLAYWRIGHT_BASE_URL": "http://localhost:5174"
+      },
+      "verificationMethod": "test-results",
+      "expected": "0",
+      "timeoutSeconds": 300
+    }
+  ]
+}

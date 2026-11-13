@@ -1,0 +1,206 @@
+batch_id: "B01"
+completed_tasks: ["T001", "T002", "T003", "T004", "T005", "T006", "T007", "T008", "T009", "T010", "T011", "T012", "T013"]
+blocked_tasks:
+  - task_id: "T014"
+    reason: "The complete default Playwright suite requires Spring Boot on port 8080; the backend was unavailable and live-auth tests received HTTP 502 or timed out."
+    required_task_ids: []
+files_changed:
+  T001:
+    - file: "backend/pom.xml"
+      change_type: "modified"
+      description: "Added managed Spring AI OpenAI and chat-client modules."
+    - file: "backend/src/main/resources/application.properties"
+      change_type: "modified"
+      description: "Configured explicit provider selection and mock default."
+  T002:
+    - file: "backend/src/main/java/com/ai/sdlc/domain/Requirement.java"
+      change_type: "modified"
+      description: "Added backward-compatible acceptance-criteria storage."
+  T003:
+    - file: "backend/src/main/java/com/ai/sdlc/dto/"
+      change_type: "created"
+      description: "Added requirement API DTOs."
+    - file: "backend/src/main/java/com/ai/sdlc/ai/"
+      change_type: "created"
+      description: "Added provider contracts and project generation context."
+  T004:
+    - file: "backend/src/main/java/com/ai/sdlc/repository/RequirementRepository.java"
+      change_type: "created"
+      description: "Added project-owner-scoped repository."
+  T005:
+    - file: "backend/src/test/java/com/ai/sdlc/RequirementJsonParserTest.java"
+      change_type: "created"
+      description: "Added structured-output parser tests."
+    - file: "backend/src/test/java/com/ai/sdlc/OpenAiRequirementGenerationProviderTest.java"
+      change_type: "created"
+      description: "Added mocked OpenAI adapter tests."
+  T006:
+    - file: "backend/src/main/java/com/ai/sdlc/ai/"
+      change_type: "created"
+      description: "Added mock/OpenAI providers, parser, and provider error handling."
+    - file: "backend/src/main/java/com/ai/sdlc/config/RequirementAiConfig.java"
+      change_type: "created"
+      description: "Added provider configuration."
+  T007:
+    - file: "backend/src/main/java/com/ai/sdlc/service/RequirementService.java"
+      change_type: "created"
+      description: "Added owner-scoped requirement generation and review lifecycle."
+  T008:
+    - file: "backend/src/main/java/com/ai/sdlc/controller/RequirementController.java"
+      change_type: "created"
+      description: "Added authenticated requirements API."
+    - file: "backend/src/main/java/com/ai/sdlc/exception/GlobalExceptionHandler.java"
+      change_type: "modified"
+      description: "Added explicit provider and validation error mapping."
+  T009:
+    - file: "backend/src/test/java/com/ai/sdlc/RequirementServiceTest.java"
+      change_type: "created"
+      description: "Added service lifecycle tests."
+    - file: "backend/src/test/java/com/ai/sdlc/RequirementIntegrationTest.java"
+      change_type: "created"
+      description: "Added H2-backed API, persistence, and owner authorization tests."
+  T010:
+    - file: "frontend/src/services/requirementsApi.ts"
+      change_type: "created"
+      description: "Added typed CSRF-aware API calls."
+    - file: "frontend/src/types/requirement.ts"
+      change_type: "created"
+      description: "Added frontend requirement types."
+  T011:
+    - file: "frontend/src/App.tsx"
+      change_type: "modified"
+      description: "Added project requirements workspace navigation."
+    - file: "frontend/src/components/RequirementsWorkspace.tsx"
+      change_type: "created"
+      description: "Added responsive generation and review UI."
+    - file: "frontend/src/index.css"
+      change_type: "modified"
+      description: "Added workspace styling."
+  T012:
+    - file: "frontend/tests/requirements.spec.ts"
+      change_type: "created"
+      description: "Added requirements browser workflow and error-state coverage."
+  T013:
+    - file: "docs/REQUIREMENTS_ENGINEERING.md"
+      change_type: "created"
+      description: "Documented workflow, API, data flow, provider setup, and test boundaries."
+    - file: "docs/ARCHITECTURE.md"
+      change_type: "modified"
+      description: "Documented requirements architecture."
+    - file: "docs/DATABASE_SCHEMA.md"
+      change_type: "modified"
+      description: "Documented requirement schema."
+    - file: "docs/FRONTEND.md"
+      change_type: "modified"
+      description: "Documented requirements workspace."
+  T014:
+    - file: "frontend/test-results/TESTING-REPORT.md"
+      change_type: "modified"
+      description: "Recorded implementation validation and live-test blocker."
+    - file: "docs/requirements-engineering/plan.md"
+      change_type: "modified"
+      description: "Marked implementation tasks and documented the blocked final validation."
+    - file: "docs/requirements-engineering/checkpoints/tasks-to-impl.yaml"
+      change_type: "created"
+      description: "Recorded task traceability and verification evidence."
+upstream_artifacts_consumed:
+  T001:
+    - artifact: "docs/requirements-engineering/feature-spec.md"
+      used_for: "Provider selection and secret/mock requirements."
+    - artifact: "docs/requirements-engineering/plan.md"
+      used_for: "Spring AI and configuration approach."
+  T011:
+    - artifact: "docs/requirements-engineering/feature-spec.md"
+      used_for: "Requirements workspace and human-review acceptance criteria."
+    - artifact: "docs/FRONTEND.md"
+      used_for: "Existing React layout, theme, and project navigation conventions."
+  T013:
+    - artifact: "docs/requirements-engineering/feature-spec.md"
+      used_for: "Documentation scope and required API/provider details."
+evidence_mapping:
+  T006:
+    - upstream: "docs/requirements-engineering/feature-spec.md#REQ-002"
+      output: "backend/src/main/java/com/ai/sdlc/ai/"
+      evidence: "OpenAI adapter and parser tests pass in Maven suite."
+  T009:
+    - upstream: "docs/requirements-engineering/feature-spec.md#REQ-004"
+      output: "backend/src/test/java/com/ai/sdlc/RequirementIntegrationTest.java"
+      evidence: "Owner authorization and endpoint tests pass on H2."
+  T012:
+    - upstream: "docs/requirements-engineering/feature-spec.md#REQ-006"
+      output: "frontend/tests/requirements.spec.ts"
+      evidence: "3 targeted Chromium tests pass."
+traceability:
+  - requirement: "REQ-001"
+    plan_item: "2.2,2.3,2.4,2.5"
+    task: "T003,T006,T007,T008"
+    files: ["backend/src/main/java/com/ai/sdlc/ai/", "backend/src/main/java/com/ai/sdlc/service/RequirementService.java", "backend/src/main/java/com/ai/sdlc/controller/RequirementController.java"]
+    status: "completed"
+  - requirement: "REQ-002"
+    plan_item: "1.1,2.3"
+    task: "T001,T005,T006"
+    files: ["backend/pom.xml", "backend/src/main/java/com/ai/sdlc/config/RequirementAiConfig.java", "backend/src/main/java/com/ai/sdlc/ai/"]
+    status: "completed"
+  - requirement: "REQ-003"
+    plan_item: "2.1,2.2,2.4"
+    task: "T002,T003,T004,T007,T009"
+    files: ["backend/src/main/java/com/ai/sdlc/domain/Requirement.java", "backend/src/main/java/com/ai/sdlc/repository/RequirementRepository.java", "backend/src/main/java/com/ai/sdlc/service/RequirementService.java"]
+    status: "completed"
+  - requirement: "REQ-004"
+    plan_item: "2.2,2.4,2.5"
+    task: "T004,T007,T008,T009"
+    files: ["backend/src/main/java/com/ai/sdlc/repository/RequirementRepository.java", "backend/src/main/java/com/ai/sdlc/controller/RequirementController.java", "backend/src/test/java/com/ai/sdlc/RequirementIntegrationTest.java"]
+    status: "completed"
+  - requirement: "REQ-005"
+    plan_item: "2.4,2.5,3.1"
+    task: "T007,T008,T011,T012"
+    files: ["backend/src/main/java/com/ai/sdlc/service/RequirementService.java", "frontend/src/components/RequirementsWorkspace.tsx"]
+    status: "completed"
+  - requirement: "REQ-006"
+    plan_item: "3.1"
+    task: "T010,T011,T012"
+    files: ["frontend/src/services/requirementsApi.ts", "frontend/src/components/RequirementsWorkspace.tsx", "frontend/tests/requirements.spec.ts"]
+    status: "completed"
+  - requirement: "REQ-007"
+    plan_item: "2.3,2.4,2.5,3.1,4.1"
+    task: "T005,T009,T012,T014"
+    files: ["backend/src/test/java/com/ai/sdlc/", "frontend/tests/requirements.spec.ts"]
+    status: "partial"
+  - requirement: "REQ-008"
+    plan_item: "1.1,4.1"
+    task: "T001,T013"
+    files: ["backend/src/main/resources/application.properties", "docs/REQUIREMENTS_ENGINEERING.md"]
+    status: "completed"
+protocol_violation: false
+errors: []
+warnings:
+  - "The complete default Playwright suite has three backend-dependent failures because localhost:8080 is unavailable."
+  - "Real PostgreSQL and OpenAI execution for requirements generation remain unverified."
+test_results:
+  T005:
+    command: "mvn test"
+    passed: 21
+    failed: 0
+    skipped: 0
+    failures: []
+  T009:
+    command: "mvn test"
+    passed: 21
+    failed: 0
+    skipped: 0
+    failures: []
+  T012:
+    command: "npm run test:e2e -- tests/requirements.spec.ts --workers=1"
+    passed: 3
+    failed: 0
+    skipped: 0
+    failures: []
+  T014:
+    command: "npm run test:e2e -- --workers=1"
+    passed: 7
+    failed: 3
+    skipped: 1
+    failures:
+      - "Invalid-registration API test: GET /api/auth/csrf returned HTTP 502."
+      - "Invalid-login API test: login response timed out while backend was unavailable."
+      - "Homepage API check: GET /api/auth/csrf returned HTTP 502."

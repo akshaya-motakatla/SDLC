@@ -1,0 +1,451 @@
+metadata:
+  generated: "2026-11-12"
+  source_tasks: "docs/requirements-engineering/plan.md"
+  last_updated: "2026-11-12"
+
+summary:
+  total_tasks: 14
+  completed_tasks: 13
+  in_progress_tasks: 0
+  pending_tasks: 0
+  completion_percentage: 92.9
+
+tasks:
+  - task_id: "T001"
+    description: "Add Spring AI provider dependencies and environment configuration"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "backend/pom.xml"
+          changes:
+            - change_type: "modified"
+              description: "Added Spring AI BOM-managed OpenAI and chat-client modules"
+        - file: "backend/src/main/resources/application.properties"
+          changes:
+            - change_type: "modified"
+              description: "Configured explicit mock default and environment-driven provider selection"
+    verification:
+      build_passed: true
+      test_results:
+        command: "mvn test"
+        passed: 21
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "No live model call was made."
+    upstream_trace:
+      plan_item: "1.1"
+      requirements: ["REQ-002", "REQ-008"]
+      full_trace: "REQ-002,REQ-008 -> 1.1 -> T001 -> backend/pom.xml, application.properties"
+
+  - task_id: "T002"
+    description: "Extend requirement persistence compatibly"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "backend/src/main/java/com/ai/sdlc/domain/Requirement.java"
+          changes:
+            - change_type: "modified"
+              description: "Added nullable acceptance-criteria storage without removing legacy fields"
+    verification:
+      build_passed: true
+      test_results:
+        command: "mvn test"
+        passed: 21
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Verified using the isolated H2 test configuration, not PostgreSQL."
+    upstream_trace:
+      plan_item: "2.1"
+      requirements: ["REQ-003"]
+      full_trace: "REQ-003 -> 2.1 -> T002 -> Requirement.java"
+
+  - task_id: "T003"
+    description: "Define validated DTOs and provider contracts"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "backend/src/main/java/com/ai/sdlc/dto/"
+          changes:
+            - change_type: "added"
+              description: "Added requirement generation, response, and update contracts"
+        - file: "backend/src/main/java/com/ai/sdlc/ai/"
+          changes:
+            - change_type: "added"
+              description: "Added provider and generation context contracts"
+    verification:
+      build_passed: true
+      test_results:
+        command: "mvn test"
+        passed: 21
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "DTO and provider contract exercised by backend tests."
+    upstream_trace:
+      plan_item: "2.2"
+      requirements: ["REQ-001", "REQ-002", "REQ-003", "REQ-004"]
+      full_trace: "REQ-001..REQ-004 -> 2.2 -> T003 -> dto/, ai/"
+
+  - task_id: "T004"
+    description: "Add owner-scoped requirement queries"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "backend/src/main/java/com/ai/sdlc/repository/RequirementRepository.java"
+          changes:
+            - change_type: "added"
+              description: "Added owner/project-scoped repository operations"
+    verification:
+      build_passed: true
+      test_results:
+        command: "mvn test"
+        passed: 21
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Authorization behavior covered by backend integration tests."
+    upstream_trace:
+      plan_item: "2.2"
+      requirements: ["REQ-003", "REQ-004"]
+      full_trace: "REQ-003,REQ-004 -> 2.2 -> T004 -> RequirementRepository.java"
+
+  - task_id: "T005"
+    description: "Test provider output parsing and failures"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "backend/src/test/java/com/ai/sdlc/RequirementJsonParserTest.java"
+          changes:
+            - change_type: "added"
+              description: "Added strict structured-output parsing tests"
+        - file: "backend/src/test/java/com/ai/sdlc/OpenAiRequirementGenerationProviderTest.java"
+          changes:
+            - change_type: "added"
+              description: "Added provider request/error tests using mocks"
+    verification:
+      build_passed: true
+      test_results:
+        command: "mvn test"
+        passed: 21
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Tests do not require paid API credentials."
+    upstream_trace:
+      plan_item: "2.3"
+      requirements: ["REQ-002", "REQ-007"]
+      full_trace: "REQ-002,REQ-007 -> 2.3 -> T005 -> parser/provider tests"
+
+  - task_id: "T006"
+    description: "Implement mock and OpenAI providers and strict parsing"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "backend/src/main/java/com/ai/sdlc/ai/"
+          changes:
+            - change_type: "added"
+              description: "Added explicit demo provider, OpenAI adapter, parser, and provider error types"
+        - file: "backend/src/main/java/com/ai/sdlc/config/RequirementAiConfig.java"
+          changes:
+            - change_type: "added"
+              description: "Creates provider from explicit environment configuration"
+    verification:
+      build_passed: true
+      test_results:
+        command: "mvn test"
+        passed: 21
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Real OpenAI output and provider availability were not tested."
+    upstream_trace:
+      plan_item: "2.3"
+      requirements: ["REQ-001", "REQ-002", "REQ-007"]
+      full_trace: "REQ-001,REQ-002,REQ-007 -> 2.3 -> T006 -> ai/, RequirementAiConfig.java"
+
+  - task_id: "T007"
+    description: "Implement owner-scoped requirement review lifecycle"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "backend/src/main/java/com/ai/sdlc/service/RequirementService.java"
+          changes:
+            - change_type: "added"
+              description: "Added generation, persistence, list/get/edit, status transitions, and safe deletion"
+    verification:
+      build_passed: true
+      test_results:
+        command: "mvn test"
+        passed: 21
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "H2 integration and service tests pass."
+    upstream_trace:
+      plan_item: "2.4"
+      requirements: ["REQ-003", "REQ-004", "REQ-005"]
+      full_trace: "REQ-003..REQ-005 -> 2.4 -> T007 -> RequirementService.java"
+
+  - task_id: "T008"
+    description: "Expose authenticated requirement endpoints"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "backend/src/main/java/com/ai/sdlc/controller/RequirementController.java"
+          changes:
+            - change_type: "added"
+              description: "Added authenticated generation and review routes"
+        - file: "backend/src/main/java/com/ai/sdlc/exception/GlobalExceptionHandler.java"
+          changes:
+            - change_type: "modified"
+              description: "Mapped validation and provider failures to explicit HTTP responses"
+    verification:
+      build_passed: true
+      test_results:
+        command: "mvn test"
+        passed: 21
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Routes exercised in H2-backed controller tests."
+    upstream_trace:
+      plan_item: "2.5"
+      requirements: ["REQ-001", "REQ-004", "REQ-005"]
+      full_trace: "REQ-001,REQ-004,REQ-005 -> 2.5 -> T008 -> RequirementController.java"
+
+  - task_id: "T009"
+    description: "Test persistence, transitions, validation, and owner denial"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "backend/src/test/java/com/ai/sdlc/RequirementServiceTest.java"
+          changes:
+            - change_type: "added"
+              description: "Covered lifecycle and service ownership behavior"
+        - file: "backend/src/test/java/com/ai/sdlc/RequirementIntegrationTest.java"
+          changes:
+            - change_type: "added"
+              description: "Covered controller, persistence, and authorization using H2"
+    verification:
+      build_passed: true
+      test_results:
+        command: "mvn test"
+        passed: 21
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "No real PostgreSQL database was used for this feature's automated integration tests."
+    upstream_trace:
+      plan_item: "2.4,2.5"
+      requirements: ["REQ-003", "REQ-004", "REQ-005", "REQ-007"]
+      full_trace: "REQ-003..REQ-005,REQ-007 -> 2.4,2.5 -> T009 -> backend tests"
+
+  - task_id: "T010"
+    description: "Add typed frontend requirements API"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "frontend/src/services/requirementsApi.ts"
+          changes:
+            - change_type: "added"
+              description: "Added CSRF-aware requirement API methods"
+        - file: "frontend/src/types/requirement.ts"
+          changes:
+            - change_type: "added"
+              description: "Added typed requirement request and response models"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm run build; npm run typecheck:e2e"
+        passed: 2
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Both checks exited successfully."
+    upstream_trace:
+      plan_item: "3.1"
+      requirements: ["REQ-005", "REQ-006"]
+      full_trace: "REQ-005,REQ-006 -> 3.1 -> T010 -> requirementsApi.ts, requirement.ts"
+
+  - task_id: "T011"
+    description: "Implement the requirements workspace UI"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "frontend/src/App.tsx"
+          changes:
+            - change_type: "modified"
+              description: "Added project-to-requirements workspace navigation"
+        - file: "frontend/src/components/RequirementsWorkspace.tsx"
+          changes:
+            - change_type: "added"
+              description: "Added generation, loading/error/empty states, review actions, and provider disclosure"
+        - file: "frontend/src/index.css"
+          changes:
+            - change_type: "modified"
+              description: "Added responsive workspace styles"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm run build; requirements Playwright tests"
+        passed: 4
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "One unrelated pre-existing App.tsx lint warning remains."
+    upstream_trace:
+      plan_item: "3.1"
+      requirements: ["REQ-005", "REQ-006"]
+      full_trace: "REQ-005,REQ-006 -> 3.1 -> T011 -> App.tsx, RequirementsWorkspace.tsx, index.css"
+
+  - task_id: "T012"
+    description: "Add Playwright requirements workflow tests"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "frontend/tests/requirements.spec.ts"
+          changes:
+            - change_type: "added"
+              description: "Covers loading, generate, reload, edit, approve, reject, delete, provider failure, and narrow viewport"
+            - change_type: "modified"
+              description: "Narrowed mutation route fixtures and allowed generation requests to reach their handler"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm run test:e2e -- tests/requirements.spec.ts --workers=1"
+        passed: 3
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Tests use Playwright route fixtures; they do not prove live API or PostgreSQL behavior."
+    upstream_trace:
+      plan_item: "3.1,4.1"
+      requirements: ["REQ-005", "REQ-006", "REQ-007"]
+      full_trace: "REQ-005..REQ-007 -> 3.1,4.1 -> T012 -> requirements.spec.ts"
+
+  - task_id: "T013"
+    description: "Document workflow, API, schema, architecture, and provider setup"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "docs/REQUIREMENTS_ENGINEERING.md"
+          changes:
+            - change_type: "added"
+              description: "Documented workflow, data flow, APIs, provider setup, and testing boundaries"
+        - file: "docs/ARCHITECTURE.md"
+          changes:
+            - change_type: "modified"
+              description: "Added requirements workflow architecture"
+        - file: "docs/DATABASE_SCHEMA.md"
+          changes:
+            - change_type: "modified"
+              description: "Documented requirements fields and relationships"
+        - file: "docs/FRONTEND.md"
+          changes:
+            - change_type: "modified"
+              description: "Documented project requirements workspace"
+    verification:
+      build_passed: true
+      test_results:
+        command: "Documentation review"
+        passed: 1
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "No secret values are documented."
+    upstream_trace:
+      plan_item: "4.1"
+      requirements: ["REQ-008"]
+      full_trace: "REQ-008 -> 4.1 -> T013 -> requirements and architecture documentation"
+
+  - task_id: "T014"
+    description: "Run complete validation and record outcomes"
+    status: "blocked"
+    implementation:
+      files_changed:
+        - file: "frontend/test-results/TESTING-REPORT.md"
+          changes:
+            - change_type: "modified"
+              description: "Recorded feature test results and live integration limitations"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm run test:e2e -- --workers=1"
+        passed: 7
+        failed: 3
+        skipped: 1
+        failures:
+          - "CSRF endpoint returned 502 because backend port 8080 was unavailable"
+          - "Live invalid-login request timed out because backend port 8080 was unavailable"
+          - "Homepage live CSRF check returned 502 because backend port 8080 was unavailable"
+      notes: "Maven tests, frontend build/type-check, changed-source lint, the 3-test requirements run, and the 7-pass safe UI selection succeeded. Full live-auth browser verification requires Spring Boot to be started."
+    upstream_trace:
+      plan_item: "4.1"
+      requirements: ["REQ-002", "REQ-005", "REQ-007", "REQ-008"]
+      full_trace: "REQ-002,REQ-005,REQ-007,REQ-008 -> 4.1 -> T014 -> testing report"
+
+pending_tasks: []
+
+untracked_changes: []
+
+traceability_chain:
+  - chain_id: "TRACE-REQ-001-004"
+    requirement: "REQ-001"
+    plan_phase: "Phase-2/3"
+    plan_item: "2.2,2.3,2.4,2.5"
+    tasks: ["T003", "T006", "T007", "T008"]
+    files:
+      - "backend/src/main/java/com/ai/sdlc/ai/"
+      - "backend/src/main/java/com/ai/sdlc/service/RequirementService.java"
+      - "backend/src/main/java/com/ai/sdlc/controller/RequirementController.java"
+    status: "complete"
+  - chain_id: "TRACE-REQ-002"
+    requirement: "REQ-002"
+    plan_phase: "Phase-1/3"
+    plan_item: "1.1,2.3"
+    tasks: ["T001", "T005", "T006"]
+    files:
+      - "backend/pom.xml"
+      - "backend/src/main/java/com/ai/sdlc/config/RequirementAiConfig.java"
+      - "backend/src/main/java/com/ai/sdlc/ai/"
+    status: "complete"
+  - chain_id: "TRACE-REQ-003-005"
+    requirement: "REQ-003"
+    plan_phase: "Phase-2/3"
+    plan_item: "2.1,2.2,2.4"
+    tasks: ["T002", "T003", "T004", "T007", "T009"]
+    files:
+      - "backend/src/main/java/com/ai/sdlc/domain/Requirement.java"
+      - "backend/src/main/java/com/ai/sdlc/service/RequirementService.java"
+      - "backend/src/test/java/com/ai/sdlc/RequirementIntegrationTest.java"
+    status: "complete"
+  - chain_id: "TRACE-REQ-006-007"
+    requirement: "REQ-006"
+    plan_phase: "Phase-4"
+    plan_item: "3.1"
+    tasks: ["T010", "T011", "T012"]
+    files:
+      - "frontend/src/components/RequirementsWorkspace.tsx"
+      - "frontend/tests/requirements.spec.ts"
+    status: "complete"
+  - chain_id: "TRACE-REQ-008"
+    requirement: "REQ-008"
+    plan_phase: "Phase-5"
+    plan_item: "4.1"
+    tasks: ["T001", "T013"]
+    files:
+      - "docs/REQUIREMENTS_ENGINEERING.md"
+      - "frontend/test-results/TESTING-REPORT.md"
+    status: "complete"
+
+validation:
+  passed: false
+  errors: []
+  warnings:
+    - "Complete default Playwright run has three backend-dependent failures while port 8080 is unavailable."
+    - "Real OpenAI and PostgreSQL requirements execution have not been verified."
+    - "One pre-existing react-hooks/exhaustive-deps warning remains in frontend/src/App.tsx."
+  blocking_issues:
+    - "Start Spring Boot against the isolated test database and rerun the three backend-dependent Playwright checks before marking T014 complete."
