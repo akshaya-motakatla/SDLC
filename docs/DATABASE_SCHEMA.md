@@ -102,7 +102,7 @@ Represents a versioned architecture output for a project. New documents use `con
 The `(project_id, version)` pair is unique for generated versions. Each generation creates a new version rather than overwriting an earlier approved/rejected document. `architecture_document_requirements` is an element-collection table storing the source requirement UUIDs used for that document; ownership and approval are checked again at generation time.
 
 ### 2.6 DevelopmentTask
-Represents a work item from the development plan.
+Represents a project-scoped development work item. The original task columns and required primary requirement relationship are retained for existing-row compatibility; the planning workflow adds optional task metadata and normalized association tables.
 
 | Field | Type | Constraints | Notes |
 |---|---|---|---|
@@ -112,12 +112,21 @@ Represents a work item from the development plan.
 | taskId | VARCHAR(50) | NOT NULL | e.g., TASK-001 |
 | title | VARCHAR(255) | NOT NULL | Task title |
 | description | TEXT | NOT NULL | Task description |
-| priority | VARCHAR(50) | NOT NULL | High/Medium/Low |
-| status | VARCHAR(50) | NOT NULL | TODO/IN_PROGRESS/DONE |
-| dependencyIds | TEXT | NULL | Related tasks |
+| priority | VARCHAR(50) | NOT NULL | `LOW`, `MEDIUM`, `HIGH`, or `CRITICAL` for new planning tasks |
+| status | VARCHAR(50) | NOT NULL | `TODO`, `IN_PROGRESS`, `BLOCKED`, or `COMPLETED`; legacy `DONE` is normalized in API responses |
+| category | VARCHAR(50) | NULL | `FRONTEND`, `BACKEND`, `DATABASE`, `API`, `SECURITY`, `INTEGRATION`, or `OTHER` |
+| estimatedEffortHours | INTEGER | NULL | Positive estimate in hours |
+| acceptanceCriteria | TEXT | NULL | Newline-separated criteria |
+| reviewStatus | VARCHAR(50) | NULL | `DRAFT`, `APPROVED`, or `REJECTED`; null for legacy rows |
+| generationProvider | VARCHAR(40) | NULL | `MOCK_DEMO`, `OPENAI`, or null for legacy tasks |
+| dependencyIds | TEXT | NULL | Retained compatibility projection of dependency task IDs |
 | milestone | VARCHAR(100) | NULL | Delivery milestone |
 | createdAt | TIMESTAMP | NOT NULL | Audit timestamp |
 | updatedAt | TIMESTAMP | NOT NULL | Audit timestamp |
+
+`development_task_requirements` associates a task with all of its source requirements; the legacy non-null `requirement_id` remains populated with one primary related requirement. `development_task_architecture_documents` stores source architecture document links. `development_task_dependencies` stores task-to-task dependencies as UUID relationships. All source and dependency IDs are checked against the same project before updates; generated task references are restricted to approved inputs.
+
+The API exposes UUID IDs, related requirement and architecture reference summaries, dependency UUIDs and task codes, and provider/demo provenance. New fields are additive and nullable to accommodate existing rows; JPA/Hibernate schema evolution must be reviewed and applied using the deployment's approved database migration process before production use.
 
 ### 2.7 TestCase
 Represents a QA scenario.
@@ -173,7 +182,7 @@ Stores runtime agent execution metadata and failures.
 - Project has many requirements, user stories, tasks, test cases, architecture documents, logs
 - Requirement can relate to many user stories, tasks, tests, and traceability rows
 - UserStory links to one requirement and belongs to one project
-- DevelopmentTask links to one project and one requirement
+- DevelopmentTask links to one project and one legacy primary requirement; it can also link to multiple requirements and architecture documents and to same-project dependent tasks
 - TestCase links to one project and one requirement
 - RequirementTraceability connects all downstream artifacts to a requirement
 
@@ -192,4 +201,4 @@ Use:
 - `@CreationTimestamp` and `@UpdateTimestamp` for audit fields
 
 ## 6. Implementation status
-Users, projects, requirements, and architecture documents are persisted by the current backend. Development tasks, test cases, user stories, traceability, and agent logs remain design-level entities unless otherwise implemented in a later phase. Servlet sessions are currently stored by the application server in memory and are not represented in this relational schema; a shared session store is required before horizontally scaling application instances.
+Users, projects, requirements, architecture documents, and development tasks are persisted by the current backend. Test cases, user stories, traceability workflows, and agent logs remain design-level entities unless otherwise implemented in a later phase. Servlet sessions are currently stored by the application server in memory and are not represented in this relational schema; a shared session store is required before horizontally scaling application instances.

@@ -1,6 +1,7 @@
 package com.ai.sdlc;
 
 import com.ai.sdlc.repository.ProjectRepository;
+import com.ai.sdlc.repository.DevelopmentTaskRepository;
 import com.ai.sdlc.repository.RequirementRepository;
 import com.ai.sdlc.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -42,10 +43,14 @@ class RequirementIntegrationTest {
     private RequirementRepository requirementRepository;
 
     @Autowired
+    private DevelopmentTaskRepository developmentTaskRepository;
+
+    @Autowired
     private UserRepository userRepository;
 
     @BeforeEach
     void clearDatabase() {
+        developmentTaskRepository.deleteAll();
         requirementRepository.deleteAll();
         projectRepository.deleteAll();
         userRepository.deleteAll();

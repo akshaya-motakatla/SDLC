@@ -2,6 +2,9 @@ package com.ai.sdlc.config;
 
 import com.ai.sdlc.ai.MockRequirementGenerationProvider;
 import com.ai.sdlc.ai.ArchitectureGenerationProvider;
+import com.ai.sdlc.ai.DevelopmentTaskGenerationProvider;
+import com.ai.sdlc.ai.MockDevelopmentTaskGenerationProvider;
+import com.ai.sdlc.ai.OpenAiDevelopmentTaskGenerationProvider;
 import com.ai.sdlc.ai.MockArchitectureGenerationProvider;
 import com.ai.sdlc.ai.OpenAiArchitectureGenerationProvider;
 import com.ai.sdlc.ai.OpenAiRequirementGenerationProvider;
@@ -45,6 +48,12 @@ public class RequirementAiConfig {
     }
 
     @Bean
+    @ConditionalOnProperty(name = "app.ai.provider", havingValue = "mock", matchIfMissing = true)
+    public DevelopmentTaskGenerationProvider mockDevelopmentTaskGenerationProvider(ObjectMapper objectMapper) {
+        return new MockDevelopmentTaskGenerationProvider(objectMapper);
+    }
+
+    @Bean
     @ConditionalOnProperty(name = "app.ai.provider", havingValue = "openai")
     public RequirementGenerationProvider openAiRequirementGenerationProvider(ChatClient chatClient, ObjectMapper objectMapper) {
         return new OpenAiRequirementGenerationProvider(chatClient, objectMapper);
@@ -54,6 +63,12 @@ public class RequirementAiConfig {
     @ConditionalOnProperty(name = "app.ai.provider", havingValue = "openai")
     public ArchitectureGenerationProvider openAiArchitectureGenerationProvider(ChatClient chatClient, ObjectMapper objectMapper) {
         return new OpenAiArchitectureGenerationProvider(chatClient, objectMapper);
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "app.ai.provider", havingValue = "openai")
+    public DevelopmentTaskGenerationProvider openAiDevelopmentTaskGenerationProvider(ChatClient chatClient, ObjectMapper objectMapper) {
+        return new OpenAiDevelopmentTaskGenerationProvider(chatClient, objectMapper);
     }
 
     public RequirementGenerationProvider openAiRequirementGenerationProvider(String apiKey, String model, ObjectMapper objectMapper) {

@@ -14,6 +14,7 @@ import com.ai.sdlc.exception.NotFoundException;
 import com.ai.sdlc.repository.ProjectRepository;
 import com.ai.sdlc.repository.RequirementRepository;
 import com.ai.sdlc.repository.ArchitectureDocumentRepository;
+import com.ai.sdlc.repository.DevelopmentTaskRepository;
 import com.ai.sdlc.service.RequirementService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -44,6 +45,9 @@ class RequirementServiceTest {
     @Mock
     private ArchitectureDocumentRepository architectureDocumentRepository;
 
+    @Mock
+    private DevelopmentTaskRepository developmentTaskRepository;
+
     @InjectMocks
     private RequirementService requirementService;
 
@@ -63,6 +67,7 @@ class RequirementServiceTest {
                 projectRepository,
                 requirementRepository,
                 architectureDocumentRepository,
+                developmentTaskRepository,
                 new MockRequirementGenerationProvider(),
                 new RequirementJsonParser(new ObjectMapper())
         );
@@ -112,6 +117,7 @@ class RequirementServiceTest {
                 projectRepository,
                 requirementRepository,
                 architectureDocumentRepository,
+                developmentTaskRepository,
                 invalidProvider,
                 new RequirementJsonParser(new ObjectMapper())
         );

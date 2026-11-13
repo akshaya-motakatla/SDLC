@@ -1,7 +1,7 @@
 # Playwright E2E Testing Report
 
 **Application:** AI-Powered SDLC Automation Assistant  
-**Latest verification:** Phase 2 Architecture Generation implementation and validation (2026-11-13)  
+**Latest verification:** Phase 3 Development Planning implementation and validation (2026-11-13)
 **Browser:** Chromium  
 **Frontend:** `http://localhost:5173`; production preview audit at `http://127.0.0.1:4173`  
 **Backend:** `http://localhost:8080`  
@@ -13,7 +13,8 @@
 |---|---|---|
 | Frontend build/type check | PASS | Latest `npm run build` completed successfully |
 | Playwright TypeScript check | PASS | Latest `npm run typecheck:e2e` completed successfully |
-| Backend tests | PASS (H2) | Maven: 30 tests, 0 failures/errors/skips; architecture API/persistence tests use H2, not PostgreSQL |
+| Backend tests | PASS (H2) | Latest Maven suite: 34 tests, 0 failures/errors/skips; tests use H2, not PostgreSQL |
+| Development Planning Playwright | PASS | 5 targeted Chromium tests passed against mocked API routes |
 | Requirements Playwright tests | PASS | 3 passed in the targeted Chromium run |
 | Architecture Playwright tests | PASS | 4 passed, including approved selection, generation, editing/review, history, invalid-diagram handling, and narrow viewport |
 | Architecture + requirements browser regressions | PASS | 7 passed, 0 failed |
@@ -28,6 +29,22 @@
 | Persistence across backend restart | PASS | New backend PID/JDBC sessions verified; Playwright post-restart login and project GET passed; read-only SQL reconfirmed the same project ID |
 
 The earlier PostgreSQL restart-persistence results below concern existing authentication/project features, not the Phase 2 architecture workflow. Architecture integration tests use H2 and Playwright route fixtures; no live PostgreSQL architecture writes or OpenAI calls were made for this feature.
+
+## Phase 3 Development Planning verification (2026-11-13)
+
+| Check | Result | Evidence / scope |
+|---|---|---|
+| Backend Maven suite | PASS | 34 tests, 0 failures, 0 errors, 0 skipped; configured test datasource is in-memory `jdbc:h2:mem:ai_sdlc_test` |
+| Development Planning API workflow | PASS (H2) | Integration coverage generated, listed/filtered, retrieved, edited, approved/rejected, status-updated, and safely rejected deletion of approved tasks; also checked unapproved sources, invalid requirement/architecture references, dependency cycles, and cross-owner access |
+| Generated task parser | PASS | 2 tests passed for structured dependencies and rejection of circular dependencies/invalid priority |
+| Frontend production build | PASS | `npm run build` exited 0 |
+| Frontend lint | PASS with warning | `npm run lint` exited 0; only the existing `App.tsx` `initializeSession` exhaustive-deps warning remains |
+| Playwright TypeScript check | PASS | `npm run typecheck:e2e` exited 0 |
+| Planning browser workflow | PASS (mocked API) | `npm run test:e2e -- tests/planning.spec.ts --workers=1`: 5 passed, covering empty/loading states, generation, provenance, source details, editing, approval/rejection, status change, filtering, provider error display, and project switching |
+| Live PostgreSQL task integration/restart persistence | NOT RUN | No planning records were written to PostgreSQL; historical live PostgreSQL evidence below covers authentication and projects only |
+| Optional OpenAI generation | NOT RUN | No live provider call or credential was used |
+
+The backend tests use only the test-scoped in-memory H2 database. The original `ai_sdlc` database was not accessed or modified. The test report's earlier Phase 2 counts below are historical results from that phase; the 34-test result above is the latest full backend suite.
 
 ## Phase 1 and Phase 2 feature validation
 
@@ -137,14 +154,14 @@ Audited the Vite production build using `vite preview` (not the development serv
 | Persistence after backend restart | VERIFIED | Exact live Playwright test logged in after restart and retrieved the same project; direct SQL confirmed the row remains |
 | Requirements creation/management | IMPLEMENTED; MOCK/H2-TESTED | Owner-scoped APIs, provider boundary, persistence model, and review workspace are implemented. The new feature has 21 passing H2-backed backend tests and 3 passing mocked Playwright tests; real PostgreSQL and OpenAI execution remain unverified. |
 | Architecture generation | IMPLEMENTED; MOCK/H2-TESTED | Owner-scoped generation/list/get/edit/approve/reject/version APIs, approved-requirement provenance, draft-only editing/review, versioned persistence, and four Mermaid diagrams. Backend full suite: 30 H2 tests passed; architecture + requirements browser suite: 7 passed. Live PostgreSQL architecture persistence/restart and OpenAI generation remain unverified. |
-| Development planning | NOT IMPLEMENTED | No implemented UI/API workflow found |
+| Development planning | IMPLEMENTED; H2/API AND MOCKED-UI TESTED | Owner-scoped APIs generate only from approved inputs, validate references/dependencies, and support task list/filter/detail/edit/review/status/delete. The workspace includes project-specific task cards, provenance, milestone grouping, search/filters, and loading/empty/error states. Latest Maven suite: 34 passed; targeted planning Playwright: 5 passed. Live PostgreSQL task persistence/restart and OpenAI generation remain unverified. |
 | Test-case generation | NOT IMPLEMENTED | No implemented UI/API workflow found |
 | Traceability matrix | NOT IMPLEMENTED | No implemented UI/API workflow found |
 | SDLC report generation | NOT IMPLEMENTED | No implemented UI/API workflow found |
 | Project details page | NOT IMPLEMENTED | Current UI provides list/edit, not a distinct detail page |
 | Delayed-response loading states | NOT TESTED | No controlled delay scenario was run |
 
-The SDLC workflow navigation items and dashboard metrics for requirements, planning, testing, and traceability are marked “Soon” or “Available in a later phase.” Domain entities exist for some future artifacts, but no corresponding API controllers were found.
+The SDLC workflow navigation items and dashboard metrics for testing and traceability are marked “Soon” or “Available in a later phase.” QA generation, a traceability-matrix workflow, and report generation remain unimplemented.
 
 ## Recommended follow-up
 

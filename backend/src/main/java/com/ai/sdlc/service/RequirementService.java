@@ -15,6 +15,7 @@ import com.ai.sdlc.dto.RequirementUpdateRequest;
 import com.ai.sdlc.exception.ConflictException;
 import com.ai.sdlc.exception.NotFoundException;
 import com.ai.sdlc.repository.ArchitectureDocumentRepository;
+import com.ai.sdlc.repository.DevelopmentTaskRepository;
 import com.ai.sdlc.repository.ProjectRepository;
 import com.ai.sdlc.repository.RequirementRepository;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class RequirementService {
     private final ProjectRepository projectRepository;
     private final RequirementRepository requirementRepository;
     private final ArchitectureDocumentRepository architectureDocumentRepository;
+    private final DevelopmentTaskRepository developmentTaskRepository;
     private final RequirementGenerationProvider generationProvider;
     private final RequirementJsonParser jsonParser;
 
@@ -40,12 +42,14 @@ public class RequirementService {
             ProjectRepository projectRepository,
             RequirementRepository requirementRepository,
             ArchitectureDocumentRepository architectureDocumentRepository,
+            DevelopmentTaskRepository developmentTaskRepository,
             RequirementGenerationProvider generationProvider,
             RequirementJsonParser jsonParser
     ) {
         this.projectRepository = projectRepository;
         this.requirementRepository = requirementRepository;
         this.architectureDocumentRepository = architectureDocumentRepository;
+        this.developmentTaskRepository = developmentTaskRepository;
         this.generationProvider = generationProvider;
         this.jsonParser = jsonParser;
     }
@@ -118,7 +122,8 @@ public class RequirementService {
                 || !requirement.getDevelopmentTasks().isEmpty()
                 || !requirement.getTestCases().isEmpty()
                 || !requirement.getTraceabilityLinks().isEmpty()
-                || architectureDocumentRepository.existsByProjectAndSourceRequirementId(projectId, requirementId)) {
+                || architectureDocumentRepository.existsByProjectAndSourceRequirementId(projectId, requirementId)
+                || developmentTaskRepository.existsByRelatedRequirements_IdAndProject_Id(requirementId, projectId)) {
             throw new ConflictException("Cannot delete a requirement while linked delivery or architecture artifacts exist.");
         }
         requirementRepository.delete(requirement);

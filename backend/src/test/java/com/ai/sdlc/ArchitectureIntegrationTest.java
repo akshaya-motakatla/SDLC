@@ -1,6 +1,7 @@
 package com.ai.sdlc;
 
 import com.ai.sdlc.repository.ArchitectureDocumentRepository;
+import com.ai.sdlc.repository.DevelopmentTaskRepository;
 import com.ai.sdlc.repository.ProjectRepository;
 import com.ai.sdlc.repository.RequirementRepository;
 import com.ai.sdlc.repository.UserRepository;
@@ -48,10 +49,14 @@ class ArchitectureIntegrationTest {
     private ArchitectureDocumentRepository architectureDocumentRepository;
 
     @Autowired
+    private DevelopmentTaskRepository developmentTaskRepository;
+
+    @Autowired
     private UserRepository userRepository;
 
     @BeforeEach
     void clearIsolatedDatabase() {
+        developmentTaskRepository.deleteAll();
         architectureDocumentRepository.deleteAll();
         requirementRepository.deleteAll();
         projectRepository.deleteAll();

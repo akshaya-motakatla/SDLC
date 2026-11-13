@@ -92,7 +92,7 @@ Mitigation: Maintain the docs set as part of the workflow and keep them updated 
 - Development milestones are defined
 - Phase 1 documents are reviewed and approved before implementation starts
 
-## 6. Phase 3 implementation status
+## 6. React frontend foundation status
 - Vite + React + TypeScript frontend scaffolded under `frontend/`
 - Tailwind CSS and Lucide React configured
 - Responsive dashboard and project list screens implemented
@@ -100,3 +100,23 @@ Mitigation: Maintain the docs set as part of the workflow and keep them updated 
 - Metrics that do not yet have backend data are explicitly marked unavailable
 - Frontend production build and lint checks pass
 - See `FRONTEND.md` for local run instructions and current API boundaries
+
+## 7. Phase 3 - Development Planning module
+
+### Implemented
+- Reused the existing `DevelopmentTask` entity and added nullable planning metadata plus requirement, architecture, and task-dependency join relationships.
+- Added structured generation through the existing AI provider configuration. Generation uses only owner-approved requirements and approved architecture documents, validates provider JSON and dependency graphs, and persists tasks as unapproved drafts with provenance.
+- Added owner-scoped APIs to generate, list/filter, retrieve, update, approve/reject, change approved-task status, and safely delete tasks.
+- Added a responsive, project-specific planning workspace with task search and filters, milestone grouping, details/provenance, editing, review actions, delivery status controls, and loading/empty/error states.
+- Added backend integration/parser tests and planning Playwright coverage.
+
+### Verification and limitations
+- `mvn test`: 34 tests passed, 0 failures/errors/skips, using the isolated in-memory H2 database configured by `backend/src/test/resources/application.properties`.
+- `npm run build`: passed.
+- `npm run lint`: passed with the existing `App.tsx` exhaustive-deps warning; no planning-workspace lint warning remains.
+- `npm run typecheck:e2e`: passed.
+- `npm run test:e2e -- tests/planning.spec.ts --workers=1`: 5 tests passed, including rejection, project switching, and delayed loading state.
+- No live PostgreSQL planning test or planning restart-persistence check was run. The existing PostgreSQL restart-persistence evidence in the testing report concerns authentication/projects only; it is not evidence for development tasks.
+- Optional OpenAI generation and production deployment behavior have not been verified.
+
+See [Development Planning](./DEVELOPMENT_PLANNING.md) for API, data, and workflow details.

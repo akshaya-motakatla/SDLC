@@ -31,11 +31,12 @@ import { getCurrentUser, login, logout, register } from './services/authApi'
 import { ApiError } from './services/apiClient'
 import { createProject, deleteProject, listProjects, updateProject } from './services/projectsApi'
 import ArchitectureWorkspace from './components/ArchitectureWorkspace'
+import DevelopmentPlanningWorkspace from './components/DevelopmentPlanningWorkspace'
 import RequirementsWorkspace from './components/RequirementsWorkspace'
 import type { AuthenticatedUser, LoginPayload, RegisterPayload } from './types/auth'
 import type { Project, ProjectPayload } from './types/project'
 
-type Page = 'dashboard' | 'projects' | 'requirements' | 'architecture'
+type Page = 'dashboard' | 'projects' | 'requirements' | 'architecture' | 'planning'
 type Theme = 'light' | 'dark'
 type AuthMode = 'login' | 'register'
 
@@ -310,13 +311,20 @@ function App() {
     setPage('architecture')
   }
 
+  function openPlanning(project: Project) {
+    setSelectedProject(project)
+    setPage('planning')
+  }
+
   const pageTitle = page === 'dashboard'
     ? 'Dashboard'
     : page === 'projects'
       ? 'Projects'
       : page === 'requirements'
         ? 'Requirements'
-        : 'Architecture'
+        : page === 'architecture'
+          ? 'Architecture'
+          : 'Development Planning'
 
   return (
     <div className="app-shell">
@@ -353,7 +361,9 @@ function App() {
           <button className={`nav-item ${page === 'architecture' ? 'active' : ''}`} type="button" onClick={() => selectedProject ? setPage('architecture') : setPage('projects')}>
             <Activity size={17} /><span>Architecture</span>
           </button>
-          <div className="nav-item nav-upcoming"><ListTodo size={17} /><span>Planning</span><span className="nav-soon">Soon</span></div>
+          <button className={`nav-item ${page === 'planning' ? 'active' : ''}`} type="button" onClick={() => selectedProject ? setPage('planning') : setPage('projects')}>
+            <ListTodo size={17} /><span>Planning</span>
+          </button>
           <div className="nav-item nav-upcoming"><FlaskConical size={17} /><span>Testing</span><span className="nav-soon">Soon</span></div>
 
           <p className="nav-label nav-label-spaced">Insights</p>
@@ -411,7 +421,7 @@ function App() {
         </header>
 
         <div className="page-content">
-          {page !== 'requirements' && page !== 'architecture' && (
+          {page !== 'requirements' && page !== 'architecture' && page !== 'planning' && (
             <div className="page-heading">
               <div>
                 <div className="eyebrow"><span className="eyebrow-line" /> YOUR ENGINEERING WORKSPACE</div>
@@ -451,6 +461,13 @@ function App() {
               onOpenRequirements={() => setPage('requirements')}
               onSessionExpired={clearAuthenticatedSession}
             />
+          ) : page === 'planning' && selectedProject ? (
+            <DevelopmentPlanningWorkspace
+              key={selectedProject.id}
+              project={selectedProject}
+              onBack={() => setPage('projects')}
+              onSessionExpired={clearAuthenticatedSession}
+            />
           ) : page === 'dashboard' ? (
             <Dashboard
               projects={filteredProjects}
@@ -467,6 +484,7 @@ function App() {
               onEdit={openEditDialog}
               onOpenRequirements={openRequirements}
               onOpenArchitecture={openArchitecture}
+              onOpenPlanning={openPlanning}
             />
           ) : (
             <ProjectsPage
@@ -480,6 +498,7 @@ function App() {
               onDelete={(project) => void handleDelete(project)}
               onOpenRequirements={openRequirements}
               onOpenArchitecture={openArchitecture}
+              onOpenPlanning={openPlanning}
             />
           )}
         </div>
@@ -707,6 +726,7 @@ interface DashboardProps {
   onEdit: (project: Project) => void
   onOpenRequirements: (project: Project) => void
   onOpenArchitecture: (project: Project) => void
+  onOpenPlanning: (project: Project) => void
 }
 
 function Dashboard({
@@ -724,6 +744,7 @@ function Dashboard({
   onEdit,
   onOpenRequirements,
   onOpenArchitecture,
+  onOpenPlanning,
 }: DashboardProps) {
   const metricValue = (value: number) => hasLoadError && !hasProjectData ? '—' : value
 
@@ -734,7 +755,7 @@ function Dashboard({
         <MetricCard icon={<Activity size={17} />} label="Active projects" value={metricValue(activeCount)} caption="Currently in progress" color="blue" />
         <MetricCard icon={<Check size={17} />} label="Completed" value={metricValue(completedCount)} caption="Marked as complete" color="green" />
         <MetricCard icon={<FileText size={17} />} label="Requirements" value="—" caption="Available in a later phase" color="amber" unavailable />
-        <MetricCard icon={<ListTodo size={17} />} label="Development tasks" value="—" caption="Available in a later phase" color="cyan" unavailable />
+        <MetricCard icon={<ListTodo size={17} />} label="Development tasks" value="—" caption="Open a project to view its plan" color="cyan" unavailable />
         <MetricCard icon={<FlaskConical size={17} />} label="Test coverage" value="—" caption="Available in a later phase" color="rose" unavailable />
       </section>
 
@@ -755,6 +776,7 @@ function Dashboard({
                   onEdit={onEdit}
                   onOpenRequirements={onOpenRequirements}
                   onOpenArchitecture={onOpenArchitecture}
+                  onOpenPlanning={onOpenPlanning}
                 />
               ))}
             </div>
@@ -772,8 +794,8 @@ function Dashboard({
           </div>
           <div className="workflow-steps">
             <WorkflowStep number="01" title="Project workspace" subtitle={hasLoadError && !hasProjectData ? 'Project data is not available' : `${allProjectsCount} ${allProjectsCount === 1 ? 'project' : 'projects'} in this workspace`} state={hasLoadError && !hasProjectData ? 'upcoming' : 'complete'} />
-            <WorkflowStep number="02" title="Requirements & review" subtitle="Structured analysis with human approval" state="upcoming" />
-            <WorkflowStep number="03" title="Architecture & planning" subtitle="Design decisions and delivery roadmap" state="upcoming" />
+            <WorkflowStep number="02" title="Requirements & review" subtitle="Structured analysis with human approval" state="complete" />
+            <WorkflowStep number="03" title="Architecture & planning" subtitle="Design decisions and delivery roadmap" state="complete" />
             <WorkflowStep number="04" title="QA & traceability" subtitle="Test evidence linked to requirements" state="upcoming" last />
           </div>
           <div className="workflow-note"><ShieldCheck size={16} /><span>AI-generated artifacts will require human review before they move forward.</span></div>
@@ -851,11 +873,13 @@ function ProjectListItem({
   onEdit,
   onOpenRequirements,
   onOpenArchitecture,
+  onOpenPlanning,
 }: {
   project: Project
   onEdit: (project: Project) => void
   onOpenRequirements: (project: Project) => void
   onOpenArchitecture: (project: Project) => void
+  onOpenPlanning: (project: Project) => void
 }) {
   return (
     <article className="project-list-item">
@@ -867,6 +891,7 @@ function ProjectListItem({
       <StatusBadge status={project.status} />
       <button className="row-action requirements-open-action" type="button" onClick={() => onOpenRequirements(project)} aria-label={`Open requirements for ${project.name}`} title="Open requirements"><FileText size={15} /></button>
       <button className="row-action requirements-open-action" type="button" onClick={() => onOpenArchitecture(project)} aria-label={`Open architecture for ${project.name}`} title="Open architecture"><Activity size={15} /></button>
+      <button className="row-action requirements-open-action" type="button" onClick={() => onOpenPlanning(project)} aria-label={`Open planning for ${project.name}`} title="Open planning"><ListTodo size={15} /></button>
       <button className="row-action" type="button" onClick={() => onEdit(project)} aria-label={`Edit ${project.name}`}><ArrowRight size={16} /></button>
     </article>
   )
@@ -883,6 +908,7 @@ function ProjectsPage({
   onDelete,
   onOpenRequirements,
   onOpenArchitecture,
+  onOpenPlanning,
 }: {
   projects: Project[]
   loading: boolean
@@ -894,6 +920,7 @@ function ProjectsPage({
   onDelete: (project: Project) => void
   onOpenRequirements: (project: Project) => void
   onOpenArchitecture: (project: Project) => void
+  onOpenPlanning: (project: Project) => void
 }) {
   return (
     <section className="panel projects-page-panel">
@@ -931,6 +958,7 @@ function ProjectsPage({
                   <div className="table-actions">
                     <button className="row-action" type="button" onClick={() => onOpenRequirements(project)} aria-label={`Open requirements for ${project.name}`} title="Open requirements"><FileText size={15} /></button>
                     <button className="row-action" type="button" onClick={() => onOpenArchitecture(project)} aria-label={`Open architecture for ${project.name}`} title="Open architecture"><Activity size={15} /></button>
+                    <button className="row-action" type="button" onClick={() => onOpenPlanning(project)} aria-label={`Open planning for ${project.name}`} title="Open planning"><ListTodo size={15} /></button>
                     <button className="row-action" type="button" onClick={() => onEdit(project)} aria-label={`Edit ${project.name}`} title="Edit project"><span className="edit-word">Edit</span></button>
                     <button className="row-action delete-action" type="button" onClick={() => onDelete(project)} aria-label={`Delete ${project.name}`} title="Delete project"><Trash2 size={15} /></button>
                   </div>

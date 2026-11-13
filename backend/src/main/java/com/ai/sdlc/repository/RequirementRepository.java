@@ -17,5 +17,17 @@ public interface RequirementRepository extends JpaRepository<Requirement, UUID> 
             String status
     );
 
+    List<Requirement> findAllByProject_IdAndProject_User_EmailAndStatusOrderByCodeAsc(
+            UUID projectId,
+            String email,
+            String status
+    );
+
+    List<Requirement> findAllByIdInAndProject_IdAndProject_User_Email(
+            List<UUID> ids,
+            UUID projectId,
+            String email
+    );
+
     Optional<Requirement> findByIdAndProject_IdAndProject_User_Email(UUID id, UUID projectId, String email);
 }

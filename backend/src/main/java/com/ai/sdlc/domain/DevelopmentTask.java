@@ -2,6 +2,8 @@ package com.ai.sdlc.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +15,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -37,6 +43,21 @@ public class DevelopmentTask {
     @Column(nullable = false, length = 50)
     private String status;
 
+    @Column(length = 50)
+    private String category;
+
+    @Column(name = "estimated_effort_hours")
+    private Integer estimatedEffortHours;
+
+    @Column(name = "acceptance_criteria", columnDefinition = "TEXT")
+    private String acceptanceCriteria;
+
+    @Column(name = "review_status", length = 50)
+    private String reviewStatus;
+
+    @Column(name = "generation_provider", length = 40)
+    private String generationProvider;
+
     @Column(columnDefinition = "TEXT")
     private String dependencyIds;
 
@@ -58,6 +79,33 @@ public class DevelopmentTask {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requirement_id", nullable = false)
     private Requirement requirement;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "development_task_requirements",
+            joinColumns = @JoinColumn(name = "development_task_id"),
+            inverseJoinColumns = @JoinColumn(name = "requirement_id")
+    )
+    private Set<Requirement> relatedRequirements = new LinkedHashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "development_task_architecture_documents",
+            joinColumns = @JoinColumn(name = "development_task_id"),
+            inverseJoinColumns = @JoinColumn(name = "architecture_document_id")
+    )
+    private Set<ArchitectureDocument> architectureReferences = new LinkedHashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "development_task_dependencies",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "dependency_id")
+    )
+    private Set<DevelopmentTask> dependencies = new LinkedHashSet<>();
+
+    @ManyToMany(mappedBy = "dependencies", fetch = FetchType.LAZY)
+    private List<DevelopmentTask> dependentTasks = new ArrayList<>();
 
     public DevelopmentTask() {
     }
@@ -118,6 +166,46 @@ public class DevelopmentTask {
         this.status = status;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public Integer getEstimatedEffortHours() {
+        return estimatedEffortHours;
+    }
+
+    public void setEstimatedEffortHours(Integer estimatedEffortHours) {
+        this.estimatedEffortHours = estimatedEffortHours;
+    }
+
+    public String getAcceptanceCriteria() {
+        return acceptanceCriteria;
+    }
+
+    public void setAcceptanceCriteria(String acceptanceCriteria) {
+        this.acceptanceCriteria = acceptanceCriteria;
+    }
+
+    public String getReviewStatus() {
+        return reviewStatus;
+    }
+
+    public void setReviewStatus(String reviewStatus) {
+        this.reviewStatus = reviewStatus;
+    }
+
+    public String getGenerationProvider() {
+        return generationProvider;
+    }
+
+    public void setGenerationProvider(String generationProvider) {
+        this.generationProvider = generationProvider;
+    }
+
     public String getDependencyIds() {
         return dependencyIds;
     }
@@ -156,5 +244,33 @@ public class DevelopmentTask {
 
     public void setRequirement(Requirement requirement) {
         this.requirement = requirement;
+    }
+
+    public Set<Requirement> getRelatedRequirements() {
+        return relatedRequirements;
+    }
+
+    public void setRelatedRequirements(Set<Requirement> relatedRequirements) {
+        this.relatedRequirements = relatedRequirements;
+    }
+
+    public Set<ArchitectureDocument> getArchitectureReferences() {
+        return architectureReferences;
+    }
+
+    public void setArchitectureReferences(Set<ArchitectureDocument> architectureReferences) {
+        this.architectureReferences = architectureReferences;
+    }
+
+    public Set<DevelopmentTask> getDependencies() {
+        return dependencies;
+    }
+
+    public void setDependencies(Set<DevelopmentTask> dependencies) {
+        this.dependencies = dependencies;
+    }
+
+    public List<DevelopmentTask> getDependentTasks() {
+        return dependentTasks;
     }
 }

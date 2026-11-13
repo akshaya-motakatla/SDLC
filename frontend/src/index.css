@@ -3113,3 +3113,325 @@ button.nav-item:hover {
     justify-content: center;
   }
 }
+
+.planning-workspace {
+  display: grid;
+  gap: 16px;
+}
+
+.planning-heading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.planning-source-warning {
+  color: #a14f56 !important;
+}
+
+:root[data-theme="dark"] .planning-source-warning {
+  color: #e3a2a4 !important;
+}
+
+.planning-filters {
+  display: grid;
+  grid-template-columns: minmax(170px, 1.5fr) repeat(3, minmax(120px, 1fr)) minmax(130px, 1fr);
+  gap: 10px;
+  padding: 14px;
+}
+
+.planning-filters .form-field {
+  min-width: 0;
+  margin: 0;
+}
+
+.planning-no-results {
+  padding: 22px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.planning-groups {
+  display: grid;
+  gap: 17px;
+}
+
+.planning-group {
+  display: grid;
+  gap: 10px;
+}
+
+.planning-group-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.planning-group-heading h3 {
+  margin: 0;
+  color: var(--text-strong);
+  font-size: 13px;
+}
+
+.planning-group-heading > span {
+  display: grid;
+  min-width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--purple-soft);
+  color: var(--purple);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.planning-task-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.planning-task-card {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 11px;
+  padding: 14px;
+}
+
+.planning-task-top,
+.planning-task-tags,
+.planning-task-status,
+.planning-task-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.planning-task-top {
+  justify-content: space-between;
+}
+
+.planning-task-id {
+  color: var(--purple);
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.3px;
+}
+
+.planning-task-card h4 {
+  margin: 0;
+  color: var(--text-strong);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.planning-task-description {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.planning-task-tags {
+  gap: 6px;
+}
+
+.planning-tag,
+.planning-demo-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 21px;
+  padding: 0 7px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface-subtle);
+  color: var(--text-muted);
+  font-size: 8px;
+  font-weight: 650;
+}
+
+.planning-demo-tag {
+  border-color: #efdbad;
+  background: #fff9eb;
+  color: #8d671d;
+}
+
+:root[data-theme="dark"] .planning-demo-tag {
+  border-color: #685630;
+  background: #393122;
+  color: #e6ca82;
+}
+
+.planning-effort {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-muted);
+  font-size: 9px;
+}
+
+.planning-task-status {
+  color: var(--text-muted);
+  font-size: 9px;
+}
+
+.planning-task-status select {
+  min-height: 27px;
+  margin-left: auto;
+  padding: 0 7px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 9px;
+}
+
+.task-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-soft);
+}
+
+.task-status-in_progress {
+  background: #6289e8;
+}
+
+.task-status-blocked {
+  background: #d67575;
+}
+
+.task-status-completed {
+  background: var(--green);
+}
+
+.planning-task-actions {
+  padding-top: 9px;
+  border-top: 1px solid var(--border);
+}
+
+.planning-task-actions .text-button {
+  margin-right: auto;
+  font-size: 9px;
+}
+
+.planning-task-actions .button {
+  min-height: 27px;
+  padding: 0 7px;
+  font-size: 8px;
+}
+
+.planning-task-details {
+  display: grid;
+  gap: 11px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface-subtle);
+}
+
+.planning-task-details strong {
+  color: var(--text-strong);
+  font-size: 9px;
+}
+
+.planning-task-details ul,
+.planning-task-details p {
+  margin: 5px 0 0;
+  padding-left: 15px;
+  color: var(--text-muted);
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.planning-task-details p {
+  padding-left: 0;
+}
+
+.planning-edit-dialog {
+  max-height: min(90vh, 850px);
+  overflow: auto;
+}
+
+.planning-edit-form {
+  display: grid;
+  gap: 12px;
+}
+
+.planning-reference-picker {
+  display: grid;
+  max-height: 150px;
+  gap: 7px;
+  overflow: auto;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+}
+
+.planning-reference-picker legend {
+  padding: 0 4px;
+  color: var(--text-strong);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.planning-reference-picker label {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  color: var(--text-muted);
+  font-size: 9px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.planning-reference-picker input {
+  flex: 0 0 auto;
+  accent-color: var(--purple);
+}
+
+.planning-reference-picker p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 9px;
+}
+
+@media (max-width: 950px) {
+  .planning-filters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .planning-heading-actions {
+    width: 100%;
+  }
+
+  .planning-heading-actions .button {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .planning-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .planning-filters .form-field:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .planning-task-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .planning-task-actions {
+    align-items: stretch;
+  }
+
+  .planning-task-actions .text-button {
+    width: 100%;
+  }
+}

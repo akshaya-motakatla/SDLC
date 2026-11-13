@@ -32,6 +32,18 @@ public interface ArchitectureDocumentRepository extends JpaRepository<Architectu
             String ownerEmail
     );
 
+    List<ArchitectureDocument> findAllByProject_IdAndProject_User_EmailAndStatusOrderByVersionDescCreatedAtDesc(
+            UUID projectId,
+            String ownerEmail,
+            String status
+    );
+
+    List<ArchitectureDocument> findAllByIdInAndProject_IdAndProject_User_Email(
+            List<UUID> ids,
+            UUID projectId,
+            String ownerEmail
+    );
+
     @Query("""
             select case when count(document) > 0 then true else false end
             from ArchitectureDocument document

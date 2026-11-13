@@ -25,6 +25,7 @@ Vite serves the frontend on its local development port and proxies `/api` reques
 - Projects: project listing, search, create, edit, and delete using the backend project API.
 - Requirements workspace: open an owned project, review saved project context, generate functional/non-functional requirements, and edit, approve, reject, or delete them.
 - Architecture workspace: select approved requirements, generate a draft architecture, edit its content, review four Mermaid diagrams and their source, approve/reject drafts, and reopen earlier versions.
+- Development Planning workspace: generate project-scoped tasks from approved requirements and approved architecture documents, inspect provenance and dependencies, search/filter/group tasks, edit drafts, approve/reject them, and update delivery status for approved tasks.
 - Light/dark theme toggle, responsive layouts, and accessible form labels.
 
 ## Data and availability behavior
@@ -36,10 +37,14 @@ Vite serves the frontend on its local development port and proxies `/api` reques
 - If the backend cannot be reached, the dashboard shows a connection error, retry action, and a distinct unavailable-data state.
 - Requirement generation is available under each project's Requirements workspace. The default mock provider is clearly disclosed as demo output; the UI never labels it as real AI generation.
 - Architecture generation uses the same provider setting and clearly identifies mock output. The browser validates Mermaid source before rendering in strict mode; invalid source is reported and the broken preview is withheld while its source remains viewable.
-- Development tasks, QA, traceability, notifications, and account settings remain future-phase features.
+- Development task generation uses the existing provider setting; mock output is labeled as demo output. Generated tasks remain drafts until explicitly approved.
+- Task data is fetched and mutated through the selected project's authenticated API routes. Switching projects remounts the workspace so task state and filters cannot leak between projects.
+- QA generation, a traceability-matrix workspace, notifications, and account settings remain future-phase features.
 - Session cookies require HTTPS in production; configure `SESSION_COOKIE_SECURE=true` and serve frontend and API from the same origin or explicitly configure a trusted CORS/CSRF deployment boundary.
 
 ## Quality checks
 Run `npm run build` for TypeScript checking and a production Vite build. Run `npm run lint` for the configured Oxlint check.
 
-Run `npm run typecheck:e2e` to type-check Playwright tests. With the Vite development server running, run `npm run test:e2e -- tests/architecture.spec.ts tests/requirements.spec.ts --workers=1` for the architecture and requirements browser workflows. Mermaid is dynamically loaded; its production bundle includes large parser/layout chunks, which currently trigger Vite's chunk-size warning.
+Run `npm run typecheck:e2e` to type-check Playwright tests. With the Vite development server running, run `npm run test:e2e -- tests/planning.spec.ts --workers=1` for the planning workflow, or include `tests/architecture.spec.ts` and `tests/requirements.spec.ts` for earlier feature workflows. Mermaid is dynamically loaded; its production bundle includes large parser/layout chunks, which currently trigger Vite's chunk-size warning.
+
+See [Development Planning](./DEVELOPMENT_PLANNING.md) for supported operations and lifecycle rules.

@@ -2,6 +2,7 @@ package com.ai.sdlc.exception;
 
 import com.ai.sdlc.ai.RequirementGenerationException;
 import com.ai.sdlc.ai.ArchitectureGenerationException;
+import com.ai.sdlc.ai.DevelopmentTaskGenerationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -43,6 +44,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ArchitectureGenerationException.class)
     public ResponseEntity<Map<String, Object>> handleArchitectureGenerationException(ArchitectureGenerationException ex) {
+        return errorResponse(HttpStatus.BAD_GATEWAY, ex.getMessage());
+    }
+
+    @ExceptionHandler(DevelopmentTaskGenerationException.class)
+    public ResponseEntity<Map<String, Object>> handleDevelopmentTaskGenerationException(DevelopmentTaskGenerationException ex) {
         return errorResponse(HttpStatus.BAD_GATEWAY, ex.getMessage());
     }
 

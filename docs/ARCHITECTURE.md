@@ -63,7 +63,7 @@ The longer-term product roadmap includes four runtime Java agents:
 - DevelopmentPlannerAgent
 - QATestingAgent
 
-Each agent is intended to be a dedicated Java component with a narrow responsibility and a clear contract for its inputs and outputs.
+Each agent is intended to be a dedicated Java component with a narrow responsibility and a clear contract for its inputs and outputs. The development-planning workflow is implemented as an owner-scoped service and API, but a separately orchestrated `DevelopmentPlannerAgent` is not present.
 
 Requirements engineering and architecture generation are implemented workflow slices. Development planning, QA, traceability, reporting, and a general-purpose multi-agent orchestrator remain future work; the named roadmap agents should not be interpreted as implemented runtime components.
 
@@ -74,7 +74,8 @@ Requirements engineering and architecture generation are implemented workflow sl
 4. The owner selects approved requirements and requests architecture generation
 5. The architecture provider returns structured content and four validated Mermaid diagrams
 6. The owner edits the draft and approves or rejects it; each subsequent generation creates a new version
-7. Development planning, QA, traceability validation, and final report generation are planned follow-on workflows
+7. The owner generates tasks from approved requirements and approved architecture documents, reviews each draft, and moves approved tasks through delivery statuses
+8. QA generation, traceability validation, final report generation, and cross-workflow orchestration remain planned follow-on workflows
 
 ## 6. Human approval gates
 A strict approval model is required:
@@ -99,6 +100,11 @@ The React requirements workspace calls the session- and CSRF-aware API service. 
 The React architecture workspace loads saved requirements and architecture documents through the session- and CSRF-aware API client. Approved requirements are selected by default, and the backend independently verifies project ownership and `APPROVED` status before it sends project context and the selected requirement text to the configured architecture provider. The response parser validates required sections and all four diagrams before a draft is persisted.
 
 The existing Spring AI provider selection is shared with requirements generation: `mock` is the clearly labeled default, and `openai` is optional. A generation creates a new project-scoped version; only a `DRAFT` can be edited, approved, or rejected. All document operations verify ownership using the authenticated account. See [Architecture generation](./ARCHITECTURE_GENERATION.md) for the API, diagram syntax, persistence, setup, and validation details.
+
+### 7.3 Implemented development-planning flow
+The planning workspace loads tasks and source references for the selected project through the authenticated, CSRF-aware API client. Generation is permitted only for an owned project with at least one approved requirement. The service supplies approved functional and non-functional requirements and approved architecture documents, together with the project description, objectives, domain, and preferred stack, to the configured task-generation provider. Architecture inputs are optional when no document is approved.
+
+Provider JSON is validated before persistence, including task fields, source references, and the dependency graph. Generated tasks are saved as `TODO` / `DRAFT`, include provider/demo provenance, acceptance criteria, effort, milestone, source links, and same-batch task dependencies, and are never auto-approved. Drafts can be edited, approved, or rejected; only approved tasks can be moved through delivery statuses. All operations resolve ownership from the authenticated account and project association. See [Development Planning](./DEVELOPMENT_PLANNING.md) for endpoint and lifecycle details.
 
 ## 8. Proposed module breakdown
 ### Backend
@@ -157,9 +163,10 @@ The existing Spring AI provider selection is shared with requirements generation
 - Clearly label demo output; do not silently substitute mock output after provider failure
 
 ## 11. Implemented phase status
-- Phase 1 requirements engineering: implemented with persistence, owner-scoped APIs, provider abstraction, and human review.
-- Phase 2 architecture generation: implemented with approved-requirement input, structured documents, Mermaid diagrams, editing, review, persistence, and project-level version history.
-- Planning, QA/testing generation, traceability, reports, and cross-workflow orchestration: not implemented.
+- Requirements engineering: implemented with persistence, owner-scoped APIs, provider abstraction, and human review.
+- Architecture generation: implemented with approved-requirement input, structured documents, Mermaid diagrams, editing, review, persistence, and project-level version history.
+- Development planning: implemented with approved-source generation, project-scoped task CRUD/filtering, dependency validation, draft review, and delivery status updates.
+- QA/testing generation, a traceability matrix workflow, report generation, and cross-workflow orchestration: not implemented.
 
 ## 12. Decision summary
 The architecture intentionally favors a clean, layered Java/Spring system with a React frontend and a clear orchestration layer. This keeps the product professional, extensible, and aligned with the presented SDLC automation objectives.
